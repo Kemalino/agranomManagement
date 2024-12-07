@@ -1,4 +1,8 @@
-import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import {
+  BellOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+} from '@ant-design/icons';
 import { Button } from 'antd';
 import { Layout } from 'antd';
 import { FC } from 'react';
@@ -12,19 +16,25 @@ const Header: FC<{ collapsed: boolean; toggle: () => void }> = ({
     <Header
       className="site-layout-background"
       style={{
-        padding: 0,
+        padding: 10,
         background: '#fff',
         display: 'flex',
         alignItems: 'center',
+        justifyContent: 'space-between',
+        borderBottom: '1px solid rgb(234, 233, 233)',
       }}
     >
-      <Button
-        type="text"
-        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        onClick={toggle}
-        style={{ marginLeft: '16px' }}
-      />
-      <h3 style={{ marginLeft: '16px' }}>Main Layout</h3>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Button
+          type="text"
+          icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+          onClick={toggle}
+          style={{ marginLeft: '16px' }}
+        />
+      </div>
+      <Button>
+        <BellOutlined style={{ fontSize: '18px' }} />
+      </Button>
     </Header>
   );
 };
