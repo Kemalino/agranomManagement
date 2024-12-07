@@ -1,22 +1,34 @@
-import { Route, Routes } from "react-router-dom";
-import "./App.css";
-import { lazy, Suspense } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
-import MainLayout from "./homePage/mainLayout";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+import MainLayout from './homePage/mainLayout';
+
+const WelcomePage = lazy(() => import('./components/welcomePage'));
+const Map = lazy(() => import('./components/map'));
 
 function App() {
-  // const HomePage = lazy(() => import("./homePage/mainLayout"));
-  const WelcomePage = lazy(() => import("./components/welcomePage"));
-
   return (
     <Router>
-      <MainLayout>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Routes>
-            <Route path="/" element={<WelcomePage />} />
-          </Routes>
-        </Suspense>
-      </MainLayout>
+      <Routes>
+        {/* Wrap the main layout around the nested routes */}
+        <Route path="/" element={<MainLayout />}>
+          <Route
+            index
+            element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <WelcomePage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="map"
+            element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <Map />
+              </Suspense>
+            }
+          />
+        </Route>
+      </Routes>
     </Router>
   );
 }

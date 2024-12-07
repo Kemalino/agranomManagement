@@ -1,15 +1,10 @@
-import { useState } from "react";
-import { Layout, Menu, Button } from "antd";
-import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
-import SideBar from "./sidebar/sidebar";
+import { useState } from 'react';
+import { Layout } from 'antd';
+import SideBar from './sidebar/sidebar';
+import Header from './header/header';
+import { Outlet } from 'react-router-dom';
 
-const { Header, Sider, Content } = Layout;
+const { Content } = Layout;
 
 const MainLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -19,35 +14,20 @@ const MainLayout = () => {
   };
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout style={{ minHeight: '100vh' }}>
       <SideBar collapsed={collapsed} />
       <Layout className="site-layout">
-        <Header
-          className="site-layout-background"
-          style={{
-            padding: 0,
-            background: "#fff",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={toggle}
-            style={{ marginLeft: "16px" }}
-          />
-          <h3 style={{ marginLeft: "16px" }}>Main Layout</h3>
-        </Header>
+        <Header toggle={toggle} collapsed={collapsed} />
         <Content
           style={{
-            margin: "24px 16px",
+            margin: '24px 16px',
             padding: 24,
             minHeight: 280,
-            background: "#fff",
+            background: '#fff',
           }}
         >
-          Content goes here
+          {/* Nested routes will render here */}
+          <Outlet />
         </Content>
       </Layout>
     </Layout>
