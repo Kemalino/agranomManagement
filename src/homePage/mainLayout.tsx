@@ -16,17 +16,16 @@ const MainLayout = () => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <SideBar collapsed={collapsed} />
-      <Layout className="site-layout">
+      <Layout>
         <Header toggle={toggle} collapsed={collapsed} />
         <Content
           style={{
-            margin: '24px 16px',
+            // margin: '24px 16px',
             padding: 24,
             minHeight: 280,
             background: '#fff',
           }}
         >
-          {/* Nested routes will render here */}
           <Outlet />
         </Content>
       </Layout>

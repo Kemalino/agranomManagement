@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import MainLayout from './homePage/mainLayout';
+import AshgabatWeatherMap from './components/weather';
 
 const WelcomePage = lazy(() => import('./components/welcomePage'));
 const Map = lazy(() => import('./components/map'));
@@ -24,6 +25,14 @@ function App() {
             element={
               <Suspense fallback={<div>Loading...</div>}>
                 <Map />
+              </Suspense>
+            }
+          />
+          <Route
+            path="weather"
+            element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <AshgabatWeatherMap />
               </Suspense>
             }
           />
