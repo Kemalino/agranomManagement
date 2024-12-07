@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import {
   MapContainer,
   TileLayer,
   Marker,
   Popup,
+  useMap,
   Rectangle,
 } from 'react-leaflet';
+import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-// Define custom marker icon (optional)
-import L from 'leaflet';
+// Custom Marker Icon (Optional)
 const customIcon = new L.Icon({
   iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-green.png',
   iconSize: [38, 38],
@@ -17,9 +18,22 @@ const customIcon = new L.Icon({
   popupAnchor: [-3, -76],
 });
 
+// Component to Fly to Location
+const FlyToLocation = ({ lat, lng, shouldFly }) => {
+  const map = useMap();
+
+  React.useEffect(() => {
+    if (shouldFly && lat && lng) {
+      map.flyTo([lat, lng], 17); // Adjust zoom level if needed
+    }
+  }, [lat, lng, map, shouldFly]);
+
+  return null;
+};
+
 const TreeMap = () => {
-  // Garden center and bounds (replace with your real data)
-  const gardenCenter = [37.7749, -122.4194]; // Replace with your garden's center coordinates
+  // Garden bounds and center
+  const gardenCenter = [37.7749, -122.4194];
   const gardenBounds = [
     [37.77, -122.423], // Southwest corner
     [37.779, -122.415], // Northeast corner
@@ -43,41 +57,86 @@ const TreeMap = () => {
     },
   ];
 
+  // State to manage selected location
+  const [selectedLocation, setSelectedLocation] = useState({
+    lat: NaN,
+    lng: NaN,
+  });
+  const [shouldFly, setShouldFly] = useState(false); // New state to control flying behavior
+
+  // References to marker popups
+  const markerRefs = useRef([]);
+
+  // Function to go to a specific location
+  const goToLocation = (lat: number, lng: number) => {
+    setSelectedLocation({ lat, lng });
+    setShouldFly(true); // Set fly behavior to true
+
+    // Check if there's a marker at the specified location
+    const markerIndex = trees.findIndex(
+      (tree) => tree.lat === lat && tree.lng === lng
+    );
+    if (markerIndex !== -1 && markerRefs.current[markerIndex]) {
+      // Open the popup programmatically
+      markerRefs.current[markerIndex].openPopup();
+    }
+  };
+
   return (
-    <MapContainer
-      center={gardenCenter}
-      zoom={17} // Adjust zoom level for your garden
-      style={{ height: '600px', width: '100%' }}
-      maxBounds={gardenBounds} // Restrict map to the garden area
-      maxBoundsViscosity={1.0} // Prevents dragging outside the bounds
-    >
-      {/* Base map tiles */}
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
+    <div>
+      {/* Button to Test Navigation */}
+      <button onClick={() => goToLocation(37.7749, -122.4194)}>
+        Go to Apple Tree
+      </button>
+      <button onClick={() => goToLocation(37.7755, -122.418)}>
+        Go to Orange Tree
+      </button>
 
-      {/* Highlight garden boundary */}
-      <Rectangle
-        bounds={gardenBounds}
-        pathOptions={{ color: 'green', weight: 2 }}
-      />
+      <MapContainer
+        center={gardenCenter}
+        zoom={17}
+        style={{ height: '600px', width: '100%' }}
+        maxBounds={gardenBounds}
+        maxBoundsViscosity={1.0}
+        maxZoom={19} // Set the maxZoom here
+      >
+        {/* Base Tile Layer */}
+        <TileLayer
+          maxZoom={19}
+          url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
 
-      {/* Add tree markers */}
-      {trees.map((tree) => (
-        <Marker
-          key={tree.id}
-          position={[tree.lat, tree.lng]}
-          icon={customIcon} // Optional: Use custom icons for trees
-        >
-          <Popup>
-            <strong>{tree.name}</strong>
-            <br />
-            Health: {tree.health}
-          </Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+        {/* Highlight Garden Boundary */}
+        <Rectangle
+          bounds={gardenBounds}
+          pathOptions={{ color: 'green', weight: 2 }}
+        />
+
+        {/* Fly to Selected Location */}
+        <FlyToLocation
+          lat={selectedLocation.lat}
+          lng={selectedLocation.lng}
+          shouldFly={shouldFly} // Pass fly control state
+        />
+
+        {/* Tree Markers */}
+        {trees.map((tree, index) => (
+          <Marker
+            key={tree.id}
+            position={[tree.lat, tree.lng]}
+            icon={customIcon}
+            ref={(el) => (markerRefs.current[index] = el)} // Store marker reference
+          >
+            <Popup>
+              <strong>{tree.name}</strong>
+              <br />
+              Health: {tree.health}
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+    </div>
   );
 };
 
