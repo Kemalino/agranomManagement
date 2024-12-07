@@ -1,15 +1,9 @@
-import { useState } from "react";
-import { Layout, Menu, Button } from "antd";
-import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
-import SideBar from "./sidebar/sidebar";
+import { useState } from 'react';
+import { Layout, Button } from 'antd';
+import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
+import SideBar from './sidebar/sidebar';
 
-const { Header, Sider, Content } = Layout;
+const { Header, Content } = Layout;
 
 const MainLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -19,32 +13,32 @@ const MainLayout = () => {
   };
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout style={{ minHeight: '100vh' }}>
       <SideBar collapsed={collapsed} />
-      <Layout className="site-layout">
+      <Layout className='site-layout'>
         <Header
-          className="site-layout-background"
+          className='site-layout-background'
           style={{
             padding: 0,
-            background: "#fff",
-            display: "flex",
-            alignItems: "center",
+            background: '#fff',
+            display: 'flex',
+            alignItems: 'center',
           }}
         >
           <Button
-            type="text"
+            type='text'
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={toggle}
-            style={{ marginLeft: "16px" }}
+            style={{ marginLeft: '16px' }}
           />
-          <h3 style={{ marginLeft: "16px" }}>Main Layout</h3>
+          <h3 style={{ marginLeft: '16px' }}>Main Layout</h3>
         </Header>
         <Content
           style={{
-            margin: "24px 16px",
+            margin: '24px 16px',
             padding: 24,
             minHeight: 280,
-            background: "#fff",
+            background: '#fff',
           }}
         >
           Content goes here
