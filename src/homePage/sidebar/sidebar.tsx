@@ -54,7 +54,7 @@ const SideBar: FC<{ collapsed: boolean }> = ({ collapsed }) => {
             weather
           </Menu.Item>
         </SubMenu>
-        <Menu.Item key='2-1'>Option 1</Menu.Item>
+        <Menu.Item key='2-1'></Menu.Item>
         <Menu.Item key='2-2'>Option 2</Menu.Item>
         <Menu.Item key='3-1'>Option 1</Menu.Item>
         <Menu.Item key='3-2'>Option 2</Menu.Item>

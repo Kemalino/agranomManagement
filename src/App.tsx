@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import MainLayout from './homePage/mainLayout';
 import AshgabatWeatherMap from './components/weather';
+import Login from './pages/Login';
 import './App.css';
 
 const WelcomePage = lazy(() => import('./components/welcomePage'));
@@ -11,6 +12,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path='/login' element={<Login />} />
         {/* Wrap the main layout around the nested routes */}
         <Route path='/' element={<MainLayout />}>
           <Route
