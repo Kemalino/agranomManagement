@@ -51,39 +51,39 @@ const LoginForm: React.FC = () => {
           <h1 style={{ fontSize: '24px', marginBottom: '1rem', color: '#333' }}>
             Welcome,{' '}
             <span style={{ color: '#639a67', fontWeight: 'bold' }}>
-              GREEN horizon
+              <i>GREEN horizon</i>
             </span>
           </h1>
 
           <Form
-            layout='vertical'
+            layout="vertical"
             onFinish={(values) => {
               console.log('Form values:', values);
               signIn(values); // Pass form values to the signIn function
             }}
           >
             <Form.Item
-              label='Username'
-              name='userName' // Ensure the name matches the backend expected field
+              label="Username"
+              name="userName" // Ensure the name matches the backend expected field
               rules={[
                 { required: true, message: 'Please enter your username!' },
               ]}
             >
-              <Input placeholder='Enter your name' />
+              <Input placeholder="Enter your name" />
             </Form.Item>
             <Form.Item
-              label='Password'
-              name='password'
+              label="Password"
+              name="password"
               rules={[
                 { required: true, message: 'Please enter your password!' },
               ]}
             >
-              <Input.Password placeholder='Enter your password' />
+              <Input.Password placeholder="Enter your password" />
             </Form.Item>
             <Form.Item>
               <Button
-                type='primary'
-                htmlType='submit'
+                type="primary"
+                htmlType="submit"
                 style={{
                   width: '100%',
                   backgroundColor: '#639a67',
