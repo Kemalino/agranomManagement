@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import MainLayout from './homePage/mainLayout';
 import AshgabatWeatherMap from './components/weather';
+import './App.css';
 
 const WelcomePage = lazy(() => import('./components/welcomePage'));
 const Map = lazy(() => import('./components/map'));
@@ -11,7 +12,7 @@ function App() {
     <Router>
       <Routes>
         {/* Wrap the main layout around the nested routes */}
-        <Route path="/" element={<MainLayout />}>
+        <Route path='/' element={<MainLayout />}>
           <Route
             index
             element={
@@ -21,7 +22,7 @@ function App() {
             }
           />
           <Route
-            path="map"
+            path='map'
             element={
               <Suspense fallback={<div>Loading...</div>}>
                 <Map />
@@ -29,7 +30,7 @@ function App() {
             }
           />
           <Route
-            path="weather"
+            path='weather'
             element={
               <Suspense fallback={<div>Loading...</div>}>
                 <AshgabatWeatherMap />

@@ -1,130 +1,109 @@
-import React, { useRef, useState } from 'react';
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMap,
-  Rectangle,
-} from 'react-leaflet';
-import L from 'leaflet';
+import React, { useRef } from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { Map as LeafletMap } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 
-const customIcon = new L.Icon({
-  iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-green.png',
-  iconSize: [38, 38],
-  iconAnchor: [22, 38],
-  popupAnchor: [-3, -76],
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
+const defaultIcon = new L.Icon({
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
 });
 
-// Component to Fly to Location
-const FlyToLocation = ({ lat, lng, shouldFly }) => {
-  const map = useMap();
+L.Marker.prototype.options.icon = defaultIcon;
 
-  React.useEffect(() => {
-    if (shouldFly && lat && lng) {
-      map.flyTo([lat, lng], 17);
-    }
-  }, [lat, lng, map, shouldFly]);
+const trees = [
+  { id: 1, name: 'Apple Tree', lat: 46.501, lng: 7.5635 },
+  { id: 2, name: 'Peach Tree', lat: 46.502, lng: 7.5645 },
+  { id: 3, name: 'Cherry Tree', lat: 46.503, lng: 7.5655 },
+];
 
-  return null;
-};
+const OrchardMap: React.FC = () => {
+  // const [selectedTree, setSelectedTree] = useState<any>(null);
+  const mapRef = useRef<LeafletMap | null>(null);
+  const markerRefs = useRef<any>({}); // To store references to markers
 
-const TreeMap = () => {
-  const gardenCenter = [37.7749, -122.4194];
-  const gardenBounds = [
-    [37.77, -122.423],
-    [37.779, -122.415],
+  console.log('mapRef: ', mapRef.current?.setView);
+
+  // Adjusted map boundaries
+  const mapBounds = [
+    [46.498, 7.561], // Southwest corner
+    [46.505, 7.569], // Northeast corner
   ];
 
-  const trees = [
-    {
-      id: 1,
-      lat: 37.7749,
-      lng: -122.4194,
-      name: 'Apple Tree',
-      health: 'Healthy',
-    },
-    {
-      id: 2,
-      lat: 37.7755,
-      lng: -122.418,
-      name: 'Orange Tree',
-      health: 'Needs Water',
-    },
-  ];
-
-  const [selectedLocation, setSelectedLocation] = useState({
-    lat: NaN,
-    lng: NaN,
-  });
-  const [shouldFly, setShouldFly] = useState(false);
-
-  const markerRefs = useRef([]);
-
-  const goToLocation = (lat: number, lng: number) => {
-    setSelectedLocation({ lat, lng });
-    setShouldFly(true);
-
-    const markerIndex = trees.findIndex(
-      (tree) => tree.lat === lat && tree.lng === lng
-    );
-    if (markerIndex !== -1 && markerRefs.current[markerIndex]) {
-      markerRefs.current[markerIndex].openPopup();
+  const handleFlyTo = (lat: number, lng: number) => {
+    if (mapRef.current) {
+      // Access the flyTo method
+      mapRef.current.flyTo([lat, lng], 17); // [lat, lng] and zoom level
     }
   };
 
   return (
-    <div>
-      <button onClick={() => goToLocation(37.7749, -122.4194)}>
-        Go to Apple Tree
-      </button>
-      <button onClick={() => goToLocation(37.7755, -122.418)}>
-        Go to Orange Tree
-      </button>
-
+    <div style={{ height: '100vh', position: 'relative' }}>
+      {/* Map Container */}
       <MapContainer
-        center={gardenCenter}
+        style={{ height: '100%', width: '100%' }}
         zoom={17}
-        style={{ height: '600px', width: '100%' }}
-        maxBounds={gardenBounds}
-        maxBoundsViscosity={1.0}
-        maxZoom={19}
+        maxBounds={mapBounds} // Restrict panning
+        minZoom={16} // Prevent zooming out too far
+        maxZoom={20} // Allow close-up zoom
+        dragging={false} // Disable dragging (prevents map from resetting to the center)
+        scrollWheelZoom={true} // Allow zooming with mouse wheel
+        ref={mapRef} // Attach map ref
+        center={[46.5, 7.565]} // Initial center of the map
       >
+        {/* Tile Layer */}
         <TileLayer
-          maxZoom={19}
           url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
 
-        <Rectangle
-          bounds={gardenBounds}
-          pathOptions={{ color: 'green', weight: 2 }}
-        />
-
-        <FlyToLocation
-          lat={selectedLocation.lat}
-          lng={selectedLocation.lng}
-          shouldFly={shouldFly}
-        />
-
-        {trees.map((tree, index) => (
+        {/* Markers */}
+        {trees.map((tree) => (
           <Marker
             key={tree.id}
             position={[tree.lat, tree.lng]}
-            icon={customIcon}
-            ref={(el) => (markerRefs.current[index] = el)}
+            ref={(el) => (markerRefs.current[tree.id] = el)} // Store reference to the marker
+            eventHandlers={{
+              click: () => {
+                handleFlyTo(tree.lat, tree.lng);
+                // Fly to the marker
+                // setSelectedTree(tree); // Set the selected tree to update the state
+              },
+            }}
           >
-            <Popup>
-              <strong>{tree.name}</strong>
-              <br />
-              Health: {tree.health}
-            </Popup>
+            <Popup>{tree.name}</Popup>
           </Marker>
         ))}
       </MapContainer>
+
+      {/* Tree Details Modal */}
+      {/* {selectedTree && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '10%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: 'white',
+            padding: '1rem',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 6px rgba(0,0,0,0.1)',
+            zIndex: 100, // Ensure it stays above the map
+          }}
+        >
+          <h3>{selectedTree.name}</h3>
+          <p>Tree ID: {selectedTree.id}</p>
+          <p>Latitude: {selectedTree.lat}</p>
+          <p>Longitude: {selectedTree.lng}</p>
+        </div>
+      )} */}
     </div>
   );
 };
 
-export default TreeMap;
+export default OrchardMap;
