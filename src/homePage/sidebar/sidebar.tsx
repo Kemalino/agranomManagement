@@ -46,7 +46,7 @@ const SideBar: FC<{ collapsed: boolean }> = ({ collapsed }) => {
         defaultSelectedKeys={['1']}
         style={{ borderRight: 'none', width: '100%' }}
       >
-        <SubMenu key='sub1' icon={<UserOutlined />} title='Nav 1'>
+        <SubMenu key='sub1' icon={<UserOutlined />} title=''>
           <Menu.Item key='1-1' onClick={() => navigate('/map')}>
             Map
           </Menu.Item>

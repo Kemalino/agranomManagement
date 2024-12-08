@@ -12,7 +12,7 @@ const LoginForm: React.FC = () => {
       const { data } = await axios.post(`${backendUrl}/auth/login`, login);
       console.log('Login successful:', data);
       cookieSetter('accessToken', data?.accessToken);
-      navigate('/');
+      // navigate('/');
     } catch (e) {
       console.error('Login error:', e);
     }
